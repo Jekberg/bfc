@@ -1,0 +1,11 @@
+beign       -> list EOF
+list        -> stmt list
+list        -> ''
+stmt        -> >
+stmt        -> <
+stmt        -> -
+stmt        -> +
+stmt        -> ,
+stmt        -> .
+stmt        -> loop
+loop        -> [ stmt_list ]
