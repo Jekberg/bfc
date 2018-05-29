@@ -27,6 +27,7 @@ module Intermidiate where
     tokenToIR DecData   = Cell (-1)
     tokenToIR Read      = ReadChr
     tokenToIR Write     = WriteChr
+    tokenToIR _         = error "Token not allowed!"
 
 {--
     -- WIP

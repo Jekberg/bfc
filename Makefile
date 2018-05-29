@@ -3,9 +3,15 @@ obj		:= $(CURDIR)/obj
 src		:= $(CURDIR)/src
 
 RM		:= rm -rf
-
 GHC 	:= ghc
-CFLAGS 	:= -tmpdir $(obj) -odir $(obj) -hidir $(obj) -i$(obj) -O3
+
+CFLAGS 	:=
+CFLAGS	+= -tmpdir $(obj)
+CFLAGS	+= -odir $(obj)
+CFLAGS 	+= -hidir $(obj)
+CFLAGS	+= -i$(obj)
+CFLAGS	+= -O3
+CFLAGS 	+= -Wall
 
 PHONY 	:=
 

@@ -1,5 +1,4 @@
 module Main where
-    import Data.List
     import System.Environment
     import System.FilePath
     import System.IO

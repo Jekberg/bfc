@@ -3,11 +3,11 @@ module Grammar where
     import Ast
 
     lookAhead :: TokenStream -> Token
-    lookAhead (t:ts)    = t
+    lookAhead (t:_)     = t
     lookAhead []        = error "Unexpected end of stream."
 
     accept :: TokenStream -> TokenStream
-    accept (t:ts)   = ts
+    accept (_:ts)   = ts
     accept []       = error "Unexpected end of stream."
 
     begin :: TokenStream -> (TokenStream, Node)
@@ -20,8 +20,9 @@ module Grammar where
     stmtList ts = case lookAhead ts of
         token
             | elem token [IncPtr, DecPtr, IncData, DecData, Read, Write] ->
-                    let (toks, node) = (stmtList . accept) ts
-                    in (toks, List (snd $ stmt ts) node)
+                let (toks, node) = stmt ts
+                in let (nToks, nNode) = stmtList toks
+                    in (nToks, List node nNode)
         Token.Begin ->
                     let (toks, node) = (loop . accept) ts
                     in
