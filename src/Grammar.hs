@@ -1,3 +1,20 @@
+
+{--
+    Grammar:
+    
+    begin       -> stmtList <EOF>
+    stmtList    -> stmt stmtList
+    stmtList    -> loop stmtList
+    stmtList    -> ''
+    stmt        -> <IncPtr>
+    stmt        -> <DecPtr>
+    stmt        -> <IncData>
+    stmt        -> <DecData>
+    stmt        -> <Read>
+    stmt        -> <Write>
+    loop        -> <Begin> stmtList <End>
+--}
+
 module Grammar where
     import Token
     import Ast
@@ -31,11 +48,7 @@ module Grammar where
         _       -> (ts, Empty)
 
     stmt :: TokenStream -> (TokenStream, Node)
-    stmt ts = case lookAhead ts of
-            Token.Begin ->
-                    let (toks, node) = (loop . accept) ts
-                    in (toks, node)
-            t           -> (accept ts, Statment t)
+    stmt ts = (accept ts, Statment t)
 
     loop :: TokenStream -> (TokenStream, Node)
     loop ts = let (toks, node) = stmtList ts
