@@ -1,7 +1,7 @@
 
 {--
     Grammar:
-    
+
     begin       -> stmtList <EOF>
     stmtList    -> stmt stmtList
     stmtList    -> loop stmtList
@@ -18,14 +18,6 @@
 module Grammar where
     import Token
     import Ast
-
-    lookAhead :: TokenStream -> Token
-    lookAhead (t:_)     = t
-    lookAhead []        = error "Unexpected end of stream."
-
-    accept :: TokenStream -> TokenStream
-    accept (_:ts)   = ts
-    accept []       = error "Unexpected end of stream."
 
     begin :: TokenStream -> (TokenStream, Node)
     begin ts = let (toks, node) = stmtList ts
@@ -48,7 +40,7 @@ module Grammar where
         _       -> (ts, Empty)
 
     stmt :: TokenStream -> (TokenStream, Node)
-    stmt ts = (accept ts, Statment t)
+    stmt ts = (accept ts, Statment $ lookAhead ts)
 
     loop :: TokenStream -> (TokenStream, Node)
     loop ts = let (toks, node) = stmtList ts

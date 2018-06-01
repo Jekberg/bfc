@@ -8,7 +8,7 @@ module Main where
     import Synthesize
 
     compile :: (String -> String)
-    compile = (generate. convert . parse . tokenize)
+    compile = (generate. optimize . convert . parse . tokenize)
 
     main :: IO()
     main = do

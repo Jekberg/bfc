@@ -1,3 +1,5 @@
+-- |
+-- |
 module Lexer where
     import Data.Maybe
     import Token
@@ -6,8 +8,13 @@ module Lexer where
     tokenize str = map fromJust $ filter isJust $ stringToTokenStream str
 
     stringToTokenStream :: String -> [Maybe Token]
-    stringToTokenStream (t:ts)  = lexicon t :stringToTokenStream ts
-    stringToTokenStream ""      = [Just EOF]
+    stringToTokenStream (t:ts)      = case t of
+        '"' -> stringToTokenStream $ comment ts
+        _   -> lexicon t :stringToTokenStream ts
+    stringToTokenStream ""          = [Just EOF]
+
+    comment :: String -> String
+    comment ts    = tail $ dropWhile (/= '"') ts
 
     lexicon :: Char -> Maybe Token
     lexicon '>' = Just IncPtr

@@ -29,15 +29,32 @@ module Intermidiate where
     tokenToIR Write     = WriteChr
     tokenToIR _         = error "Token not allowed!"
 
-{--
-    -- WIP
     optimize :: IRCode -> IRCode
-    optimize xs = removeEmptyLoop xs
+    optimize xs = if newSize /= oldSize then optimize newIR else newIR
+        where
+            newIR   = (eliminate . compact) xs
+            newSize = length newIR
+            oldSize = length xs
 
-    removeEmptyLoop :: IRCode -> IRCode
-    removeEmptyLoop (x:xs) = case x of
-        LoopCode [] -> removeEmptyLoop xs
-        loopCode s  ->
-        _          -> x: removeEmptyLoop xs
-    removeEmptyLoop [] = []
---}
+    compact :: IRCode -> IRCode
+    compact (x:[]) = case x of
+        (LoopCode xs)   -> [LoopCode $ optimize xs]
+        _               -> [x]
+    compact (x:xs) = case x of
+        (Cell a)    -> case head xs of
+            (Cell b)    -> compact $ (Cell $ a + b): tail xs
+            _           -> x:compact xs
+        (Index a)   -> case head xs of
+            (Index b)   -> compact $ (Index $ a + b): tail xs
+            _           -> x:compact xs
+        (LoopCode subXs)   -> (LoopCode $ optimize subXs):compact xs
+        _           ->  x:compact xs
+    compact []     = []
+
+    eliminate :: IRCode -> IRCode
+    eliminate (x:xs)    = case x of
+        (Cell 0)        -> eliminate xs
+        (Index 0)       -> eliminate xs
+        (LoopCode [])   -> eliminate xs
+        _               -> x:eliminate xs
+    eliminate []        = []
